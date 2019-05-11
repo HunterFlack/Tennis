@@ -1,0 +1,92 @@
+<html>
+    <canvas id="canvas">
+
+    </canvas>
+    <script>
+        //variables
+        let canvas = document.getElementById("canvas");
+        let context = canvas.getContext('2d');
+        //Size of canvas
+        let width = canvas.width = 800;
+        let height = canvas.height = 600;
+        //ball start position
+        let ballX = 410;
+        let ballY = 300;
+        //Ball Speed and radius size
+        let ballRadius = 10;
+        let ballSpeedX = 5;
+        let ballSpeedY = 3;
+        //optional radius variable
+        let ballGrowthRadius = 1;
+        //FPS
+        const FPS = 1000 / 100;
+        //Red Paddle variables
+        let paddleWidth = 20;
+        let paddleHeight = 100;
+        let paddleY = 250;
+
+        //ball movement
+        function moveBall(){
+            //ballX
+            if(ballX > width || ballX < 0){
+                ballSpeedX *= -1;
+            } 
+            //ballY 
+            if(ballY > height || ballY < 0){
+                ballSpeedY *= -1;
+            } 
+
+            //Optional ball radius growth
+            //if(ballX > width || ballX < 0){
+            //    ballRadius += 2;
+            //}
+
+            ballY += ballSpeedY ;
+            ballX += ballSpeedX ;
+        }
+        //Draw Rect
+        function drawRect(startX, startY, width, height, color){
+            context.fillStyle = color;
+            context.fillRect(startX, startY, width, height);
+        }
+        //Draw Circle
+        function drawCircle(centerX, centerY, radius, color){
+            context.fillStyle = 'purple';
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+            context.fill();
+        }
+
+        function updateAll(){
+            drawRect(0, 0, width, height, 'green');
+            drawRect(50, paddleY, paddleWidth, paddleHeight, 'red');
+            drawRect(750, 250, 20, 100, 'black');
+            drawRect(400, 0, 20, 800, 'white');
+            drawCircle(ballX, ballY, ballRadius, 'purple');
+            moveBall();
+        }
+        //Mouse Tracking
+        function calculateMousePosition(event) {
+            let rect = canvas.getBoundingClientRect(), root = document.documentElement;
+
+            let mouseX = event.clientX - rect.left - root.scrollLeft;
+            let mouseY = event.clientY - rect.top - root.scrollLTop;
+            return {
+                x: mouseX,
+                y: mouseY
+            };
+        }
+
+        //Browser Window
+        window.onload = function(){
+            console.log(canvas);
+            setInterval(function(){updateAll()}, FPS);
+
+            canvas.addEventListener('mousemove', function(event){
+                let mousePosition = calculateMousePosition(event);
+                paddleY = mousePosition.y;
+            })
+        }
+    </script>
+
+</html>
