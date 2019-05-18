@@ -3,43 +3,60 @@
 
     </canvas>
     <script>
+       
         //variables
         let canvas = document.getElementById("canvas");
         let context = canvas.getContext('2d');
+        
         //Size of canvas
         let width = canvas.width = 800;
         let height = canvas.height = 600;
+        
         //ball start position
         let ballX = 410;
         let ballY = 300;
+        
         //Ball Speed and radius size
         let ballRadius = 10;
-        let ballSpeedX = 5;
-        let ballSpeedY = 3;
+        let ballSpeedX = 4;
+        let ballSpeedY = 2;
+        
         //optional radius variable
         let ballGrowthRadius = 1;
+        
         //FPS
         const FPS = 1000 / 100;
+        
         //Red Paddle variables
         let paddleWidth = 20;
         let paddleHeight = 100;
-        let paddleY = 250;
-
+        let paddle1Y = 250;
+        let paddle2Y = 250;
+        let paddle1X = 10;
+        let paddle2X = width - 30;
         //ball movement
         function moveBall(){
             //ballX
-            if(ballX > width || ballX < 0){
-                ballSpeedX *= -1;
-            } 
+            if(ballX < 0 || ballX > width){
+              ballSpeedX *= -1;
+            }
+
+
             //ballY 
             if(ballY > height || ballY < 0){
                 ballSpeedY *= -1;
             } 
-
-            //Optional ball radius growth
+            
+            //Optional ball radius growth:
             //if(ballX > width || ballX < 0){
             //    ballRadius += 2;
             //}
+
+            //ball speed increase optional:
+            //    if(ballX > Width || ballX < 0){
+            //        ballSpeedX *= 2;
+            //        ballSpeedY *= 2;
+            //   }
 
             ballY += ballSpeedY ;
             ballX += ballSpeedX ;
@@ -56,21 +73,70 @@
             context.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
             context.fill();
         }
+        //ball reset
+        function ballReset(){
+            ballSpeedX = -ballSpeedX;
+            ballX = width/2;
+            ballY = height/2;
+        }
+ //AI movement
+ function computerMovement(){
+            let paddle2YCenter = paddle2Y + (paddleHeight/2);
+            if(paddle2YCenter < ballY - 35){
+                paddle2Y = paddle2Y + 2;
+            } else if(paddle2YCenter > ballY + 35){
+                paddle2Y = paddle2Y - 2;
+            }
+        }
 
+
+        //ball bouncing for paddles
+        function moveBall(){  
+            computerMovement();
+            
+       
+            ballX = ballX + ballSpeedX;
+            ballY = ballY + ballSpeedY;
+
+            if(ballX < 10){
+                if(ballY > paddle1Y && ballY < paddle1Y + paddleHeight){
+                    ballSpeedX = -ballSpeedX;
+                } else {
+                    ballReset();
+                }
+            }
+            if(ballX > width){
+                if(ballY > paddle2Y && ballY < paddle2Y +paddleHeight){
+                    ballSpeedX = -ballSpeedX;
+                } else {
+                    ballReset();
+                }
+            }
+            if(ballY < 0){
+                ballSpeedY = -ballSpeedY;
+            }
+            if(ballY > height){
+                ballSpeedY = -ballSpeedY;
+            }
+            
+        }
+      
+        //Drawin' the shapes
         function updateAll(){
             drawRect(0, 0, width, height, 'green');
-            drawRect(50, paddleY, paddleWidth, paddleHeight, 'red');
-            drawRect(750, 250, 20, 100, 'black');
+            drawRect(paddle1X, paddle1Y, paddleWidth, paddleHeight, 'red');
+            drawRect(paddle2X, paddle2Y, 20, 100, 'black');
             drawRect(400, 0, 20, 800, 'white');
             drawCircle(ballX, ballY, ballRadius, 'purple');
             moveBall();
+
         }
         //Mouse Tracking
         function calculateMousePosition(event) {
             let rect = canvas.getBoundingClientRect(), root = document.documentElement;
 
             let mouseX = event.clientX - rect.left - root.scrollLeft;
-            let mouseY = event.clientY - rect.top - root.scrollLTop;
+            let mouseY = event.clientY - rect.top - root.scrollTop;
             return {
                 x: mouseX,
                 y: mouseY
@@ -84,7 +150,7 @@
 
             canvas.addEventListener('mousemove', function(event){
                 let mousePosition = calculateMousePosition(event);
-                paddleY = mousePosition.y;
+                paddle1Y = mousePosition.y - paddleHeight/2;
             })
         }
     </script>
