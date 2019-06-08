@@ -18,8 +18,8 @@
         
         //Ball Speed and radius size
         let ballRadius = 10;
-        let ballSpeedX = 4;
-        let ballSpeedY = 2;
+        let ballSpeedX = 6;
+        let ballSpeedY = 4;
         
         //optional radius variable
         let ballGrowthRadius = 1;
@@ -38,7 +38,9 @@
         //Game Score
         let playerScore = 0;
         let computerScore = 0;
-        
+        let winningScore = 4;
+        var showingWinScreen = false;
+
         let ballColor = 'purple'
         //ball movement
         function moveBall(){
@@ -81,13 +83,19 @@
         }
         //ball reset
         function ballReset(){
+            if (playerScore >= winningScore || computerScore >= winningScore){
+                showingWinScreen = true;
+            }
+
+
             if(ballX < 0){
                 computerScore++;
-                ballColor = 'red'
-
-            }else if(ballX > canvas.width){
+                ballColor = 'red';
+                ballSpeedY = 2;
+            }else if(ballX > width){
                 playerScore++;
-                ballcolor = 'blue'
+                ballColor = 'blue';
+                ballSpeedY = 4;
             }
             ballSpeedX = -ballSpeedX;
             ballX = width/2;
@@ -95,6 +103,13 @@
 
             console.log( "Computer Score = " + computerScore + " Player score = " + playerScore);
         }
+        function updateAll(){
+            if(showingWinScreen){
+                return;
+            }
+  
+        }
+
  //AI movement
  function computerMovement(){
             let paddle2YCenter = paddle2Y + (paddleHeight/2);
@@ -119,8 +134,8 @@
                     ballSpeedX = -ballSpeedX;
 
                     var deltaY = ballY
-                            -(paddle1Y+paddleHeight/2);
-                    ballspeedY = deltaY * 0.35;
+                    -(paddle1Y+paddleHeight/2);
+                    ballSpeedY = deltaY * 0.35;
 
                 } else {
                     ballReset();
@@ -131,7 +146,7 @@
                     ballSpeedX = -ballSpeedX;
 
                     var deltaY = ballY
-                            -(paddle1Y+paddleHeight/2);
+                    -(paddle2Y+paddleHeight/2);
                     ballspeedY = deltaY * 0.35;
                 } else {
                     ballReset();
@@ -148,16 +163,40 @@
       
         //Drawin' the shapes
         function updateAll(){
-            drawRect(0, 0, width, height, 'black');
+            drawRect(0, 0, width, height, 'yellow');
+              
+            if(showingWinScreen){
+
+                context.fillStyle = 'white';
+
+                if(playerScore = winningScore){
+                    context.fillText("You Won", 350, 200);
+                }
+                if(computerScore = winningScore){
+                    context.fillText("You lost", 350, 200);
+                }
+                context.fillText("click to play again", 350, 500);
+                return;
+
+            }else{
+
             drawRect(paddle1X, paddle1Y, paddleWidth, paddleHeight, 'red');
             drawRect(paddle2X, paddle2Y, 20, 100, 'blue');
-            drawRect(400, 0, 20, 800, 'white');
+            drawRect(400, 0, 20, 800, 'black');
             drawCircle(ballX, ballY, ballRadius, ballColor);
             context.fillText(computerScore, width - 100, 50);
             context.fillText(playerScore, width - 700, 50);
             
             moveBall();
+            }
+        }
 
+        function handleMouseClick(evt){
+            if(showingWinScreen){
+                playerScore = 0;
+                computerScore = 0;
+                showingWinScreen = false;
+            }
         }
         //Mouse Tracking
         function calculateMousePosition(event) {
@@ -175,7 +214,8 @@
         window.onload = function(){
             console.log(canvas);
             setInterval(function(){updateAll()}, FPS);
-
+            canvas.addEventListener('mousedown', handleMouseClick);
+            
             canvas.addEventListener('mousemove', function(event){
                 let mousePosition = calculateMousePosition(event);
                 paddle1Y = mousePosition.y - paddleHeight/2;
