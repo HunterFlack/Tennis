@@ -35,13 +35,15 @@
         let paddle1X = 10;
         let paddle2X = width - 30;
         
-        //Game Score
+        //Game Score and Win screen
         let playerScore = 0;
         let computerScore = 0;
         let winningScore = 4;
         var showingWinScreen = false;
-
+        
+        //Ball color
         let ballColor = 'purple'
+
         //ball movement
         function moveBall(){
             //ballX
@@ -173,7 +175,7 @@
                 if(playerScore = winningScore){
                     context.fillText("You Won", 350, 200);
                 }
-                else if(computerScore = winningScore){
+                if(computerScore = winningScore){
                     context.fillText("You lost", 350, 200);
                 }
                 context.fillText("click to play again", 350, 500);
