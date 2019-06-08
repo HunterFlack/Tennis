@@ -163,23 +163,25 @@
       
         //Drawin' the shapes
         function updateAll(){
-            drawRect(0, 0, width, height, 'yellow');
-              
+            drawRect(0, 0, width, height, 'green');
+
+        //Win screen      
             if(showingWinScreen){
 
-                context.fillStyle = 'white';
+                context.fillStyle = 'black';
 
                 if(playerScore = winningScore){
                     context.fillText("You Won", 350, 200);
                 }
-                if(computerScore = winningScore){
+                else if(computerScore = winningScore){
                     context.fillText("You lost", 350, 200);
                 }
                 context.fillText("click to play again", 350, 500);
                 return;
 
             }else{
-
+            
+            //Drawing of game screen
             drawRect(paddle1X, paddle1Y, paddleWidth, paddleHeight, 'red');
             drawRect(paddle2X, paddle2Y, 20, 100, 'blue');
             drawRect(400, 0, 20, 800, 'black');
@@ -190,7 +192,7 @@
             moveBall();
             }
         }
-
+        //Play again?
         function handleMouseClick(evt){
             if(showingWinScreen){
                 playerScore = 0;
